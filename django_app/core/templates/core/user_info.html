@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Информация о пользователе — Django сервис</title>
+  </head>
+  <body>
+    <h1>Информация о пользователе</h1>
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email|default:"—" }}</p>
+    <p><a href="{% url 'index' %}">На главную</a></p>
+  </body>
+</html>

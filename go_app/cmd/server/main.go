@@ -150,7 +150,32 @@ func main() {
 			return
 		}
 		c.Header("Content-Type", "text/html; charset=utf-8")
-		c.String(http.StatusOK, "Привет, %s, это Go сервис", username)
+		html := `<html><body><h1>Привет, ` + username + `, это Go сервис</h1>` +
+			`<p><a href="/userinfo">User Info</a> | <a href="/logout">Logout</a></p></body></html>`
+		c.String(http.StatusOK, html)
+	})
+
+	r.GET("/userinfo", func(c *gin.Context) {
+		session := sessions.Default(c)
+		username, ok := session.Get("username").(string)
+		if !ok || username == "" {
+			c.Redirect(http.StatusFound, "/login")
+			return
+		}
+		email, _ := session.Get("email").(string)
+		c.Header("Content-Type", "text/html; charset=utf-8")
+		html := `<html><body><h1>Информация о пользователе</h1>` +
+			`<p><strong>Username:</strong> ` + username + `</p>` +
+			`<p><strong>Email:</strong> ` + email + `</p>` +
+			`<p><a href="/">На главную</a></p></body></html>`
+		c.String(http.StatusOK, html)
+	})
+
+	r.GET("/logout", func(c *gin.Context) {
+		session := sessions.Default(c)
+		session.Clear()
+		_ = session.Save()
+		c.Redirect(http.StatusFound, "/")
 	})
 
 	r.GET("/login", func(c *gin.Context) {
@@ -218,6 +243,7 @@ func main() {
 
 		session.Delete("state")
 		session.Set("username", username)
+		session.Set("email", claims.Email)
 		if err := session.Save(); err != nil {
 			c.String(http.StatusInternalServerError, "failed to save session: %v", err)
 			return

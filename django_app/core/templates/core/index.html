@@ -6,6 +6,13 @@
   </head>
   <body>
     <h1>Привет, {{ user.username }}, это Django сервис</h1>
+    <p>
+      <a href="{% url 'userinfo' %}">User Info</a> |
+      <form action="{% url 'oidc_logout' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+      </form>
+    </p>
   </body>
 </html>
 
