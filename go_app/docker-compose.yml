@@ -1,0 +1,14 @@
+services:
+  go-app:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8212:8001"
+    networks:
+      - sso-example-net
+
+networks:
+  sso-example-net:
+    external: true
+
